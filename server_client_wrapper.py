@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
-import echo_client
+import client
+import server
+import socket
 
 
-echo_client.send_data(b'message is here and will only be sent once')
+print(socket.gethostbyname(socket.gethostname()))
+
+
+client.send_data(b'message is here and will only be sent once')
