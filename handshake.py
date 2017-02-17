@@ -1,47 +1,64 @@
-#!/usr/bin/env python
-"""Secret handshake between two parties.
-Based on a class 4 1D cellular automata."""
+#!/usr/bin/env python3
+""" secret handshake made with class 4 cellular automata"""
 
-from collections import deque
-from itertools import islice
+import random
+import sys
+import functions
 import rules
 
-STARTING_ROW = deque([1])
-RULES = rules.RuleList(30).rules
 
-def get_next_row(row):
-    """prec: collections.deque composed of 1s and 0s
-    postc: returns collections.deque with rules applied"""
-    next_row_length = len(row) + 2
-    scan_row = deque(row) #scan every group of 3, zer0 padded
+def random_wordlist(length):
+    word_file = "/usr/share/dict/words"
+    words = open(word_file).read().splitlines()
 
-    scan_row.extendleft([0, 0])
-    scan_row.extend([0, 0])
+    random_words = []
+    for _ in range(length):
+        random_words.append(random.choice(words))
 
-    next_row = deque()
+    random_words = [random.choice(words) for _ in range(length)]
 
-    #print(scan_row)
-    for pos in range(next_row_length):
+    return random_words
 
-        #print(''.join(str(i) for i in list(
-        #    islice(scan_row,pos,pos+3))).ljust(3,'0'))
-        local_three = ''.join(str(i) for i in list(islice(scan_row, pos, pos + 3)))
-        next_row.append(RULES[local_three.ljust(3, '0')])
+# def get_words(number):
+#     """mapping of large numbers onto three words
 
-    return next_row
+def string_to_bin(string):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    as_int = [alphabet.index(char) for char in string]
+    as_bin = ["{0:08b}".format(integer) for integer in as_int]
+    return ''.join(as_bin)
+
+def bin_to_string(bin):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    as_bin = [bin[i:i+8] for i in range(0, len(bin), 8)]
+    as_int = [int(i, 2) for i in as_bin]
+    return ''.join([alphabet[i % 26] for i in as_int])
 
 
-row = deque([1])
-rows = [row]
-for _ in range(100):
-    row = get_next_row(row)
-    rows.append(row)
 
-max_length = len(rows[-1])
-new_rows = []
-for row in rows:
-    new_rows.append(''.join(str(item) for item in row).replace('1', '░').replace('0', '█'))
+if __name__ == "__main__":
+    mode = input("Enter 'e' to enter a secret, or 'g' to generate one: ")
+    if mode == 'e':
+        secret = input("Enter the secret: ").replace(' ', '').lower()
+        secret = string_to_bin(secret)
+    elif mode == 'g':
+        length = int(input("How many words should the secret be?: "))
+        secret = ' '.join(random_wordlist(length))
+        print("Your secret is:\n" + secret)
+        secret = string_to_bin(secret.replace(' ', '').lower())
+        # sys.exit(0)
+    else:
+        print("Unknown command. Exiting.")
+        sys.exit(0)
 
-new_rows = ['{row:^{max_length}}'.format(row=row, max_length=max_length) for row in new_rows]
-for row in new_rows:
-    print(row)
+    iters = 0
+    while iters == 0:
+        iters = int(input("What is the line you have agreed on?: "))
+
+
+
+    rows = functions.get_rows(secret, rules.RuleList(30).rules, iters)
+    last_row = rows[-1]
+    print(bin_to_string(last_row))
+
+    #make shorter and readable
