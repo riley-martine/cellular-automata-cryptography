@@ -1,11 +1,11 @@
 import socket
 import handshake
 
-ip = input("Sever ip address: ")
-# Create a TCP/IP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Connect the socket to the port where the server is listening
-server_address = (ip, 10000) #192.168.193.214
+def start_client(ip):
+    # Create a TCP/IP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Connect the socket to the port where the server is listening
+    server_address = (ip, 10000) #192.168.193.214
 
 def connect():
     print('connecting to %s port %s' % server_address)
@@ -29,3 +29,9 @@ def send_data(message):
     finally:
         print('closing socket')
         sock.close()
+
+if __name__ == "__main__":
+    ip = input("Sever ip address: ")
+    start_client(ip)
+    connect()
+    send_data()

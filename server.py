@@ -2,9 +2,9 @@
 
 import socket
 
-def start_server():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+def start_server():
     server_address = ('localhost', 10000)
     print('starting up on %s port %s' % server_address)
     host = socket.gethostname()
@@ -16,6 +16,7 @@ def start_server():
 
     # Wait for a connection
     print('waiting for a connection')
+def accept_connection():
     connection, client_address = sock.accept()
 
     try:
