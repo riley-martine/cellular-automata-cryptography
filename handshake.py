@@ -61,7 +61,7 @@ if __name__ == "__main__":
     rows = functions.get_rows(secret, rules.RuleList(30).rules, iters)
     last_row = rows[-1]
 
-    server_thread = serverThread(bytes(last_row))
+    server_thread = serverThread(bytes(last_row, encoding='ascii'))
     server_thread.start()
     time.sleep(1)
 
