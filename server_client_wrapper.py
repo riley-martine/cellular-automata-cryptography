@@ -13,5 +13,6 @@ server_thread = threading.Thread(target=server.start_server())
 server_thread.start()
 server_thread.run()
 
+client.connect()
 
 client.send_data(b'message is here and will only be sent once')
