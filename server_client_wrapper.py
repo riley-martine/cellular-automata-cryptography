@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import socket
-print("Your IP: ", end ='')
 #print([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
 
 import threading
@@ -47,8 +46,9 @@ class clientThread(threading.Thread):
             self.sock.close()
 
 class serverThread(threading.Thread):
-    def __init__(self):
+    def __init__(self, expected):
         threading.Thread.__init__(self)
+        self.expected = expected
 
     def run(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -83,18 +83,11 @@ class serverThread(threading.Thread):
             print((b''.join(data_list)).decode('ascii'))
 
 
-
-server_thread = serverThread()
-server_thread.start()
-time.sleep(1)
-
-ip = input("Server ip: ")
-client_thread = clientThread(ip, b"the medium")
-client_thread.start()
-
-# server_thread = threading.Thread(target=server.start_server())
+# if __name__ == "__main__":
+#     server_thread = serverThread()
+#     server_thread.start()
+#     time.sleep(1)
 #
-# client_thread = threading.Thread(target=client.connect())
-
-# server_thread.start()
-# client_thread.start()
+#     ip = input("Server ip: ")
+#     client_thread = clientThread(ip, b"the medium")
+#     client_thread.start()
