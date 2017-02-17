@@ -21,7 +21,6 @@ def get_next_row(row, rule_dict):
     return next_row
 
 def get_rows(first_row, rule_dict, number_of_rows):
-
     row = first_row
     rows = [row]
 
