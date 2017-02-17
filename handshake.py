@@ -57,11 +57,11 @@ if __name__ == "__main__":
     while iters == 0:
         iters = int(input("What is the line you have agreed on?: "))
 
-    
+
     rows = functions.get_rows(secret, rules.RuleList(30).rules, iters)
     last_row = rows[-1]
 
-    server_thread = serverThread(last_row)
+    server_thread = serverThread(bytes(last_row))
     server_thread.start()
     time.sleep(1)
 
