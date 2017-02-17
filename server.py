@@ -38,3 +38,6 @@ def start_server():
         # Clean up the connection
         connection.close()
         print((b''.join(data_list)).decode('ascii'))
+
+if __name__ == "__main__":
+    start_server()
