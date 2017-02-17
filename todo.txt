@@ -1,0 +1,7 @@
+####TODO####
+
+1) Choose row for user
+2) Add random data to each
+3) Two transactions!
+4) Visualize
+5) GUI?

@@ -17,20 +17,18 @@ class clientThread(threading.Thread):
         self.server_address = (ip, 10000) #192.168.193.214
 
     def run(self):
-        print("Starting client thread...")
         self.connect()
         self.send_data(self.message)
-        print("Exiting client thread...")
 
     def connect(self):
-        print('connecting to %s port %s' % self.server_address)
+        # print('connecting to %s port %s' % self.server_address)
         self.sock.connect(self.server_address)
 
     def send_data(self, message):
         try:
             # Send data
             # message = b'line four is very very long and stuff and ling anad lng'
-            print('sending "%s"' % message)
+            # print('sending "%s"' % message)
             self.sock.sendall(message)
             # Look for the response
             amount_received = 0
@@ -39,10 +37,10 @@ class clientThread(threading.Thread):
             while amount_received < amount_expected:
                 data = self.sock.recv(16)
                 amount_received += len(data)
-                print('received "%s"' % data)
+                # print('received "%s"' % data)
 
         finally:
-            print('closing socket')
+            # print('closing socket')
             self.sock.close()
 
 class serverThread(threading.Thread):
@@ -62,25 +60,33 @@ class serverThread(threading.Thread):
         connection, client_address = sock.accept()
 
         try:
-            print('connection from' + str(client_address))
+            # print('connection from' + str(client_address))
 
             # Receive the data in small chunks and retransmit it
             data_list = []
             while True:
                 data = connection.recv(16)
                 data_list.append(data)
-                print('received "%s"' % data)
+                # print('received "%s"' % data)
                 if data:
-                    print('sending data back to the client')
+                    # print('sending data back to the client')
                     connection.sendall(data)
                 else:
-                    print('no more data from' + str(client_address))
+                    # print('no more data from' + str(client_address))
                     break
 
         finally:
             # Clean up the connection
             connection.close()
-            print((b''.join(data_list)).decode('ascii'))
+            recieved = (b''.join(data_list)).decode('ascii')
+            print("Recieved: ", end='')
+            print(recieved)
+            print("Expected: ", end='')
+            print(self.expected)
+            if recieved == self.expected:
+                print("Identity verified")
+            else:
+                print("Identity not verified")
 
 
 # if __name__ == "__main__":
