@@ -5,6 +5,8 @@ import random
 import sys
 import functions
 import rules
+import time
+from server_client_wrapper import serverThread, clientThread
 
 
 def random_wordlist(length):
@@ -28,11 +30,11 @@ def string_to_bin(string):
     as_bin = ["{0:08b}".format(integer) for integer in as_int]
     return ''.join(as_bin)
 
-def bin_to_string(bin):
-    alphabet = 'abcdefghijklmnopqrstuvwxyz'
-    as_bin = [bin[i:i+8] for i in range(0, len(bin), 8)]
-    as_int = [int(i, 2) for i in as_bin]
-    return ''.join([alphabet[i % 26] for i in as_int])
+# def bin_to_string(bin):
+#     alphabet = 'abcdefghijklmnopqrstuvwxyz'
+#     as_bin = [bin[i:i+8] for i in range(0, len(bin), 8)]
+#     as_int = [int(i, 2) for i in as_bin]
+#     return ''.join([alphabet[i % 26] for i in as_int])
 
 
 
@@ -46,7 +48,7 @@ if __name__ == "__main__":
         secret = ' '.join(random_wordlist(length))
         print("Your secret is:\n" + secret)
         secret = string_to_bin(secret.replace(' ', '').lower())
-        # sys.exit(0)
+        sys.exit(0)
     else:
         print("Unknown command. Exiting.")
         sys.exit(0)
@@ -55,10 +57,14 @@ if __name__ == "__main__":
     while iters == 0:
         iters = int(input("What is the line you have agreed on?: "))
 
-
-
+    
     rows = functions.get_rows(secret, rules.RuleList(30).rules, iters)
     last_row = rows[-1]
-    print(bin_to_string(last_row))
 
-    #make shorter and readable
+    server_thread = serverThread(last_row)
+    server_thread.start()
+    time.sleep(1)
+
+    ip = input("Server ip: ")
+    client_thread = clientThread(ip, last_row)
+    client_thread.start()
