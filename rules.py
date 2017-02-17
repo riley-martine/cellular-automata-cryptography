@@ -18,4 +18,4 @@ class RuleList(object):
             "000": b_rule_list[7]
         }
 
-rl = RuleList(30)
+rl = RuleList(32)
