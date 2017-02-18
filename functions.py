@@ -34,4 +34,4 @@ def get_rows(first_row, rule_dict, number_of_rows):
 
     rows = ['{row:0^{max_length}}'.format(row=row, max_length=max_length) for row in rows]
 
-    return rows
+    return deque(rows)

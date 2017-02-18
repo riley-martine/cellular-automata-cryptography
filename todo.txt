@@ -5,3 +5,5 @@
 3) Two transactions!
 4) Visualize
 5) GUI?
+6) print IP working on OSX
+7) compress blocks via https://en.wikipedia.org/wiki/Block_Elements
