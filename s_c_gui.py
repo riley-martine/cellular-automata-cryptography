@@ -19,9 +19,10 @@ class Application(object):
         self.info = tk.StringVar()
         self.createWidgets()
 
-        # server_thread = serverThread(last_row)
-        # server_thread.start()
-        # time.sleep(1)
+
+    def recieve(self):
+        server_thread = serverThread()
+        recieved = server_thread.start()
 
     def send(self):
         automaton = Automaton()
