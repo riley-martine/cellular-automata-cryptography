@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Server recieves, client sends."""
 
 import socket
 #print([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
@@ -30,22 +31,21 @@ class clientThread(threading.Thread):
             print('sending "%s"' % message)
             self.sock.sendall(message)
             # Look for the response
-            amount_received = 0
-            amount_expected = len(message)
-
-            while amount_received < amount_expected:
-                data = self.sock.recv(16)
-                amount_received += len(data)
-                print('received "%s"' % data)
+            # amount_received = 0
+            # amount_expected = len(message)
+            #
+            # while amount_received < amount_expected:
+            #     data = self.sock.recv(16)
+            #     amount_received += len(data)
+            #     print('received "%s"' % data)
 
         finally:
             print('closing socket')
             self.sock.close()
 
 class serverThread(threading.Thread):
-    def __init__(self, expected):
+    def __init__(self):
         threading.Thread.__init__(self)
-        self.expected = expected
 
     def run(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -67,12 +67,12 @@ class serverThread(threading.Thread):
                 data = connection.recv(16)
                 data_list.append(data)
                 print('received "%s"' % data)
-                if data:
-                    print('sending data back to the client')
-                    connection.sendall(data)
-                else:
-                    print('no more data from' + str(client_address))
-                    break
+                # if data:
+                #     print('sending data back to the client')
+                #     connection.sendall(data)
+                # else:
+                #     print('no more data from' + str(client_address))
+                #     break
 
         finally:
             # Clean up the connection
@@ -80,12 +80,8 @@ class serverThread(threading.Thread):
             recieved = (b''.join(data_list)).decode('utf-8')
             print("Recieved: ", end='')
             print(recieved)
-            print("Expected: ", end='')
-            print(self.expected)
-            if recieved == self.expected:
-                print("Identity verified")
-            else:
-                print("Identity not verified")
+            return recieved
+
 
 
 # if __name__ == "__main__":
