@@ -1,19 +1,47 @@
 #!/usr/bin/env python3
 # coding=utf-8
 
-import server_client_wrapper
 import tkinter as tk
-from tkinter import ttk, Menu, Label
+from tkinter import ttk, Menu, Label, DISABLED, NORMAL, END
 import sys
 
+from server_client_wrapper import clientThread, serverThread
+import functions
+import rules
+from CellAuto_Cryptography import Automaton
+
+
 class Application(object):
+
     def __init__(self):
         self.win = tk.Tk()
         self.win.title("Send Secret Messages")
+        self.info = tk.StringVar()
         self.createWidgets()
 
+        # server_thread = serverThread(last_row)
+        # server_thread.start()
+        # time.sleep(1)
+
+    def send(self):
+        automaton = Automaton()
+        seed = automaton.seed
+        ip = self.ip.get()
+        print(type(seed))
+        plaintext = self.plaintext.get()
+        ciphertext = automaton.getCipherText(plaintext)
+        l = []
+        l.append("Sending data: ")
+        l.append("(ciphertext " + ciphertext + ") ")
+        l.append("(seed " + str(seed) + ") ")
+        l.append("(destination_ip " + ip + ")")
+        self.add_info(''.join(l))
+
+        client_thread = clientThread(ip, ciphertext)
+        client_thread.start()
 
     def createWidgets(self):
+        """Make window, with all parts."""
         # Menu Bar
         menu_bar = Menu(self.win)
         self.win.config(menu=menu_bar)
@@ -40,7 +68,7 @@ class Application(object):
 
         self.plaintext = tk.StringVar()
         plaintext_box = ttk.Entry(plaintext_frame, width=20,
-            textvariable=self.plaintext)
+                                  textvariable=self.plaintext)
         plaintext_box.grid(column=1, row=2)
         plaintext_frame.grid(column=1, row=1)
 
@@ -50,16 +78,21 @@ class Application(object):
 
         self.ip = tk.StringVar()
         ip_box = ttk.Entry(ip_frame, width=20,
-            textvariable=self.ip)
+                           textvariable=self.ip)
         ip_box.grid(column=1, row=2)
         ip_frame.grid(column=1, row=2)
 
         send_button = ttk.Button(send_tab, text="Send", command=self.send)
         send_button.grid(column=1, row=3)
 
-        info_box = tk.Canvas(send_tab, bg="grey")
+        info_box = ttk.Frame(send_tab, borderwidth=1)
+        self.info_text = tk.Text(info_box, bg="grey")
+        self.info_text.insert(
+            END, "Welcome to cryptpgraphy with cellular automata!\n")
+        self.info_text.config(state=DISABLED)
+        self.info_text.grid(column=1, row=1)
 
-        info_box.grid(column=3, row=1, rowspan=3)
+        info_box.grid(column=2, row=1, rowspan=3)
 
     def _quit(self):
         """Exit script and close window."""
@@ -67,11 +100,15 @@ class Application(object):
         self.win.destroy()
         sys.exit(0)
 
-    def send(self):
-        print("Sending data: \"" + self.plaintext.get() + "\"")
-        print("Sending seed: \"" + self.seed.get() + "\"")
+    def add_info(self, info):
+        """Add informational message to info box. Use instead of print().
+        arguments: (str) info
+        effects: add line with info printed to screen in info box"""
 
-
+        self.info_text.config(state=NORMAL)
+        info = "> " + str(info) + "\n"
+        self.info_text.insert(END, info)
+        self.info_text.config(state=DISABLED)
 
 
 if __name__ == '__main__':

@@ -8,7 +8,6 @@ import rules
 import time
 from server_client_wrapper import serverThread, clientThread
 
-
 def random_wordlist(length):
     word_file = "/usr/share/dict/words"
     words = open(word_file).read().splitlines()
@@ -20,22 +19,6 @@ def random_wordlist(length):
     random_words = [random.choice(words) for _ in range(length)]
 
     return random_words
-
-# def get_words(number):
-#     """mapping of large numbers onto three words
-
-def string_to_bin(string):
-    alphabet = 'abcdefghijklmnopqrstuvwxyz'
-    as_int = [alphabet.index(char) for char in string]
-    as_bin = ["{0:08b}".format(integer) for integer in as_int]
-    return ''.join(as_bin)
-
-# def bin_to_string(bin):
-#     alphabet = 'abcdefghijklmnopqrstuvwxyz'
-#     as_bin = [bin[i:i+8] for i in range(0, len(bin), 8)]
-#     as_int = [int(i, 2) for i in as_bin]
-#     return ''.join([alphabet[i % 26] for i in as_int])
-
 
 
 if __name__ == "__main__":
