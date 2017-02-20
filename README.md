@@ -7,14 +7,14 @@ Eventual goal: two parties both know a phrase that is their "secret handshake." 
 
 Illustration:
 
-          ..........,,,,,,,,,,   <- Row 1, random data is '.', secret handshake is ','
-         /         /\         \
-        /         /  \         \ <- Data has started combining in center triangle
-       /         /    \         \
-      /         /      \         \
-     /         /        \         \
-    /         /          \         \
-   /         /            \         \  <- Take line of center triangle and send for verification
+           ..........,,,,,,,,,,   <- Row 1, random data is '.', secret handshake is ','
+          /         /\         \
+         /         /  \         \ <- Data has started combining in center triangle
+        /         /    \         \
+       /         /      \         \
+      /         /        \         \
+     /         /          \         \  
+    /         /            \         \  <- Take line of center triangle and send for verification
 
 
 The exchange goes like this:
