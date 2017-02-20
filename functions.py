@@ -35,3 +35,9 @@ def get_rows(first_row, rule_dict, number_of_rows):
     rows = ['{row:0^{max_length}}'.format(row=row, max_length=max_length) for row in rows]
 
     return deque(rows)
+    
+def string_to_bin(string):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    as_int = [alphabet.index(char) for char in string]
+    as_bin = ["{0:08b}".format(integer) for integer in as_int]
+    return ''.join(as_bin)

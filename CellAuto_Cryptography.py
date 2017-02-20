@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 import random
+
 random.seed()
-class automaton():
+class Automaton():
     def __init__(self, seed = None):
         if seed == None:
             self.sequence = []
@@ -49,6 +52,3 @@ class automaton():
         return plainText
     def reset(self):
         self.sequence = [k for k in self.seed]
-    
-        
-        
