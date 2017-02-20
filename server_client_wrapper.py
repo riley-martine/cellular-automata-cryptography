@@ -10,7 +10,7 @@ class clientThread(threading.Thread):
     def __init__(self, ip, message):
         threading.Thread.__init__(self)
         self.ip = ip
-        self.message = bytes(message, encoding='ascii')
+        self.message = bytes(message, encoding='utf-8')
         # Create a TCP/IP socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Connect the socket to the port where the server is listening
@@ -78,7 +78,7 @@ class serverThread(threading.Thread):
         finally:
             # Clean up the connection
             connection.close()
-            recieved = (b''.join(data_list)).decode('ascii')
+            recieved = (b''.join(data_list)).decode('utf-8')
             print("Recieved: ", end='')
             print(recieved)
             print("Expected: ", end='')
