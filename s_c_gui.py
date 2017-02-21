@@ -48,7 +48,7 @@ class Application(tk.Tk):
             ciphertext = automaton.getCipherText(plaintext)
         except IndexError as e:
             print("No message entered. Sending \"Hello, World\"")
-            ciphertext = "Hello, World"
+            ciphertext = automaton.getCipherText("Hello, World")
         l = []
         l.append("Sending data: ")
         l.append("(ciphertext " + ciphertext + ") ")
