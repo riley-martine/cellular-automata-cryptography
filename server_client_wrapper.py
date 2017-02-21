@@ -77,8 +77,9 @@ class serverThread(threading.Thread):
             data_list = []
             while True:
                 data = connection.recv(16)
-                data_list.append(data)
-                print('received "%s"' % data)
+                if data != b'':
+                    data_list.append(data)
+                    print('received "%s"' % data)
                 # if data:
                 #     print('sending data back to the client')
                 #     connection.sendall(data)
@@ -90,7 +91,7 @@ class serverThread(threading.Thread):
             # Clean up the connection
             connection.close()
             received = (b''.join(data_list)).decode('utf-8')
-            print("Recieved: ", end='')
+            print("Received: ", end='')
             print(received)
             return received
 
