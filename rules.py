@@ -3,9 +3,11 @@
 
 """class for 1D cell auto rules"""
 
+
 class RuleList(object):
     """docstring for RuleList"""
-    def __init__(self, rule): # rules are in the form of a number from 0-255
+
+    def __init__(self, rule):  # rules are in the form of a number from 0-255
         b_rule_string = format(rule, '08b')
         b_rule_list = [char for char in b_rule_string]
 
