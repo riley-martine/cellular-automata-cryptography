@@ -24,23 +24,14 @@ class Application(tk.Tk):
         sys.stdout = open("buf", 'a')
 
         self.read_std_out()
-        # import subprocess
-        # proc = subprocess.Popen(['python','fake_utility.py'],stdout=subprocess.PIPE)
-        # while True:
-        #   line = proc.stdout.readline()
-        #   if line != '':
-        #     #the real code does filtering here
-        #     print "test:", line.rstrip()
-        #   else:
-        #     break
 
 
     def receive(self):
-        self.server_thread = serverThread()
-        received = self.server_thread.start()
+        self.server_thread = serverThread(self.receive_key.get())
+        self.server_thread.start()
 
     def send(self):
-        automaton = Automaton()
+        automaton = Automaton(seed=[int(k) for k in self.send_key.get()])
         seed = automaton.seed
         ip = self.ip.get()
         plaintext = self.plaintext.get()
@@ -52,7 +43,7 @@ class Application(tk.Tk):
         l = []
         l.append("Sending data: ")
         l.append("(ciphertext " + ciphertext + ") ")
-        l.append("(seed " + str(seed) + ") ")
+        # l.append("(seed " + str(seed) + ") ")
         l.append("(destination_ip " + ip + ")")
         self.add_info(''.join(l))
 
@@ -91,6 +82,16 @@ class Application(tk.Tk):
         plaintext_box.grid(column=1, row=2)
         plaintext_frame.grid(column=1, row=1)
 
+        send_key_frame = ttk.Frame(self)
+        send_key_label = ttk.Label(send_key_frame, text="Key: ")
+        send_key_label.grid(column=1, row=1)
+
+        self.send_key = tk.StringVar()
+        send_key_box = ttk.Entry(send_key_frame, width=20,
+                           textvariable=self.send_key)
+        send_key_box.grid(column=1, row=2)
+        send_key_frame.grid(column=1, row=2)
+
         ip_frame = ttk.Frame(self)
         ip_box_label = ttk.Label(ip_frame, text="Destination IP: ")
         ip_box_label.grid(column=1, row=1)
@@ -99,10 +100,10 @@ class Application(tk.Tk):
         ip_box = ttk.Entry(ip_frame, width=20,
                            textvariable=self.ip)
         ip_box.grid(column=1, row=2)
-        ip_frame.grid(column=1, row=2)
+        ip_frame.grid(column=1, row=3)
 
         send_button = ttk.Button(self, text="Send", command=self.send)
-        send_button.grid(column=1, row=3)
+        send_button.grid(column=1, row=4)
 
         info_box = ttk.Frame(self, borderwidth=1)
         self.info_text = tk.Text(info_box, bg="grey")
@@ -112,14 +113,23 @@ class Application(tk.Tk):
         self.info_text.config(state=DISABLED)
         self.info_text.grid(column=1, row=1)
 
-        info_box.grid(column=2, row=1, rowspan=5)
+        info_box.grid(column=2, row=1, rowspan=7)
 
-        s = ttk.Separator(self,orient=tk.HORIZONTAL).grid(column=1, row=4, sticky="ew")
+        s = ttk.Separator(self,orient=tk.HORIZONTAL).grid(column=1, row=5, sticky="ew")
 
-        # Recieve tab
+        receive_key_frame = ttk.Frame(self)
+        receive_key_label = ttk.Label(receive_key_frame, text="Key: ")
+        receive_key_label.grid(column=1, row=1)
+
+        self.receive_key = tk.StringVar()
+        receive_key_box = ttk.Entry(receive_key_frame, width=20,
+                           textvariable=self.receive_key)
+        receive_key_box.grid(column=1, row=2)
+        receive_key_frame.grid(column=1, row=6)
+
         receive_button = ttk.Button(
             self, text="Receive", command=self.receive)
-        receive_button.grid(column=1, row=5)
+        receive_button.grid(column=1, row=7)
 
     def _quit(self):
         """Exit script and close window."""
