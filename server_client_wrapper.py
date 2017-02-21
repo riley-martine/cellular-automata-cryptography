@@ -85,6 +85,6 @@ class serverThread(threading.Thread):
             connection.close()
             received = (b''.join(data_list)).decode('utf-8')
             print("Received: ", end='')
-            print(received)
+            print(b''.join(data_list))
             automaton = Automaton(seed=[int(k) for k in self.key])
             print("Message: " + automaton.getPlainText(received))
