@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Server recieves, client sends."""
+"""Server receives, client sends."""
 
 import socket
 #print([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
@@ -25,7 +25,15 @@ class clientThread(threading.Thread):
 
     def connect(self):
         print('connecting to %s port %s' % self.server_address)
-        self.sock.connect(self.server_address)
+        try:
+            self.sock.connect(self.server_address)
+        except ConnectionRefusedError as e:
+            print(e)
+            raise(e)
+
+        except OSError as e:
+            print(e)
+            raise(e)
 
     def send_data(self, message):
         try:
@@ -81,10 +89,10 @@ class serverThread(threading.Thread):
         finally:
             # Clean up the connection
             connection.close()
-            recieved = (b''.join(data_list)).decode('utf-8')
+            received = (b''.join(data_list)).decode('utf-8')
             print("Recieved: ", end='')
-            print(recieved)
-            return recieved
+            print(received)
+            return received
 
 
 # if __name__ == "__main__":
