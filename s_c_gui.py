@@ -11,18 +11,18 @@ import rules
 from CellAuto_Cryptography import Automaton
 
 
-class Application(object):
+class Application(tk.Tk):
 
     def __init__(self):
-        self.win = tk.Tk()
-        self.win.title("Send Secret Messages")
+        tk.Tk.__init__(self)
+        self.title("Send Secret Messages")
         self.info = tk.StringVar()
         self.createWidgets()
-
+        self.protocol("WM_DELETE_WINDOW", self._quit)
 
     def recieve(self):
-        server_thread = serverThread()
-        recieved = server_thread.start()
+        self.server_thread = serverThread()
+        recieved = self.server_thread.start()
 
     def send(self):
         automaton = Automaton()
@@ -44,15 +44,15 @@ class Application(object):
     def createWidgets(self):
         """Make window, with all parts."""
         # Menu Bar
-        menu_bar = Menu(self.win)
-        self.win.config(menu=menu_bar)
+        menu_bar = Menu(self)
+        self.config(menu=menu_bar)
 
         file_menu = Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="Exit", command=self._quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
         # Tab Bar
-        tab_control = ttk.Notebook(self.win)
+        tab_control = ttk.Notebook(self)
 
         send_tab = ttk.Frame(tab_control)
         tab_control.add(send_tab, text='Send Message')
@@ -95,10 +95,16 @@ class Application(object):
 
         info_box.grid(column=2, row=1, rowspan=3)
 
+        # Recieve tab
+        recieve_button = ttk.Button(
+            recieve_tab, text="Recieve", command=self.recieve)
+        recieve_button.grid(column=1, row=1, rowspan=2)
+
     def _quit(self):
         """Exit script and close window."""
-        self.win.quit()
-        self.win.destroy()
+        self.quit()
+        self.destroy()
+        self.server_thread.stop()
         sys.exit(0)
 
     def add_info(self, info):
@@ -114,4 +120,4 @@ class Application(object):
 
 if __name__ == '__main__':
     app = Application()
-    app.win.mainloop()
+    app.mainloop()

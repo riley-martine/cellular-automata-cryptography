@@ -7,7 +7,9 @@ import socket
 import threading
 import time
 
+
 class clientThread(threading.Thread):
+
     def __init__(self, ip, message):
         threading.Thread.__init__(self)
         self.ip = ip
@@ -15,7 +17,7 @@ class clientThread(threading.Thread):
         # Create a TCP/IP socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Connect the socket to the port where the server is listening
-        self.server_address = (ip, 10000) #192.168.193.214
+        self.server_address = (ip, 10000)  # 192.168.193.214
 
     def run(self):
         self.connect()
@@ -43,7 +45,9 @@ class clientThread(threading.Thread):
             print('closing socket')
             self.sock.close()
 
+
 class serverThread(threading.Thread):
+
     def __init__(self):
         threading.Thread.__init__(self)
 
@@ -81,7 +85,6 @@ class serverThread(threading.Thread):
             print("Recieved: ", end='')
             print(recieved)
             return recieved
-
 
 
 # if __name__ == "__main__":
