@@ -1,8 +1,10 @@
 ####TODO####
 
-1) Choose row for user
-2) Add random data to each
-3) Two transactions!
-4) Visualize
-5) GUI?
-6) print IP working on OSX
+*) Accept any key, not just binary
+*) Enforce key length
+*) Write a "how to use"
+*) Allow sending of files
+*) Allow send before receive is active
+*) Clean up and comment code
+*) Visualize
+*) print IP working on OSX
