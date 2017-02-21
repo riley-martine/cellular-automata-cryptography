@@ -30,8 +30,8 @@ def get_rows(first_row, rule_dict, number_of_rows):
     for index, row in enumerate(rows):
         rows[index] = ''.join(str(item) for item in row)
 
-    rows = ['{row:0^{max_length}}'.format(
-        row=row, max_length=max_length) for row in rows]
+  #  rows = ['{row:0^{max_length}}'.format(
+  #      row=row, max_length=max_length) for row in rows]
 
     return list(rows)
 
