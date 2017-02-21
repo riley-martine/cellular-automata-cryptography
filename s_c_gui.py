@@ -4,6 +4,7 @@
 import tkinter as tk
 from tkinter import ttk, Menu, Label, DISABLED, NORMAL, END
 import sys
+import os
 
 from server_client_wrapper import clientThread, serverThread
 import functions
@@ -19,18 +20,26 @@ class Application(tk.Tk):
         self.info = tk.StringVar()
         self.createWidgets()
         self.protocol("WM_DELETE_WINDOW", self._quit)
-        with open('buf', 'w'):
-            pass
-        sys.stdout = open("buf", 'a')
 
+        # If .buf exists, clear it.
+        with open('.buf', 'w'):
+            pass
+        # Set stdout to output to .buf
+        # This allows us to display a virtual terminal
+        # that intercepts print(info) statements from imported classes
+        sys.stdout = open(".buf", 'a')
+
+        # Check and refresh buf -- see function for details
         self.read_std_out()
 
 
     def receive(self):
+        """Prepare for reception of data."""
         self.server_thread = serverThread(self.receive_key.get())
         self.server_thread.start()
 
     def send(self):
+        """Send ciphered(plaintext, key) to ip."""
         automaton = Automaton(seed=[int(k) for k in self.send_key.get()])
         seed = automaton.seed
         ip = self.ip.get()
@@ -60,18 +69,7 @@ class Application(tk.Tk):
         file_menu.add_command(label="Exit", command=self._quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        # # Tab Bar
-        # tab_control = ttk.Notebook(self)
-        #
-        # send_tab = ttk.Frame(tab_control)
-        # tab_control.add(send_tab, text='Send Message')
-        #
-        # receive_tab = ttk.Frame(tab_control)
-        # tab_control.add(receive_tab, text='Receive Message')
-        #
-        # tab_control.pack(expand=1, fill="both")
 
-        # Send Tab
         plaintext_frame = ttk.Frame(self)
         plaintext_box_label = ttk.Label(plaintext_frame, text="Plaintext: ")
         plaintext_box_label.grid(column=1, row=1)
@@ -136,6 +134,7 @@ class Application(tk.Tk):
         self.quit()
         self.destroy()
         # self.server_thread.stop()
+        os.remove('.buf')
         sys.exit(0)
 
     def add_info(self, info):
@@ -150,16 +149,17 @@ class Application(tk.Tk):
         self.info_text.config(state=DISABLED)
 
     def read_std_out(self):
-        sys.stdout.flush()
-        # self.buf.close()
-        with open('buf', 'r') as buf:
-            read = buf.read()
-            if read:
-                self.add_info(read)
-        with open('buf', 'w'): pass
+        """Put stdout messages into the info_box. Called once, auto-refreshes"""
 
-        sys.stdout = open("buf", 'a')
-        self.after(1500,self.read_std_out)
+        sys.stdout.flush() # Force write
+        with open('.buf', 'r') as buf:
+            read = buf.read()
+            if read: # Do not write if empty
+                self.add_info(read)
+        with open('.buf', 'w'): pass # Clear file
+
+        sys.stdout = open(".buf", 'a')
+        self.after(1000,self.read_std_out) # Call this again soon
 
 
 if __name__ == '__main__':
