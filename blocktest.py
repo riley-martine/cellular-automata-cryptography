@@ -55,5 +55,5 @@ terminal_rows, terminal_columns = os.popen('stty size', 'r').read().split()
 
 
 RULES = rules.RuleList(30).rules
-print_automata(deque(['1']), RULES, (int(terminal_rows) - 16)
+print_automata(deque(list('11010011100010100101101')), RULES, (int(terminal_rows) - 16)
                * 4, (int(terminal_columns) - 16) * 4)

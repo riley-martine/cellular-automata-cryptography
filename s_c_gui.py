@@ -19,18 +19,36 @@ class Application(tk.Tk):
         self.info = tk.StringVar()
         self.createWidgets()
         self.protocol("WM_DELETE_WINDOW", self._quit)
+        with open('buf', 'w'):
+            pass
+        sys.stdout = open("buf", 'a')
 
-    def recieve(self):
+        self.read_std_out()
+        # import subprocess
+        # proc = subprocess.Popen(['python','fake_utility.py'],stdout=subprocess.PIPE)
+        # while True:
+        #   line = proc.stdout.readline()
+        #   if line != '':
+        #     #the real code does filtering here
+        #     print "test:", line.rstrip()
+        #   else:
+        #     break
+
+
+    def receive(self):
         self.server_thread = serverThread()
-        recieved = self.server_thread.start()
+        received = self.server_thread.start()
 
     def send(self):
         automaton = Automaton()
         seed = automaton.seed
         ip = self.ip.get()
-        print(type(seed))
         plaintext = self.plaintext.get()
-        ciphertext = automaton.getCipherText(plaintext)
+        try:
+            ciphertext = automaton.getCipherText(plaintext)
+        except IndexError as e:
+            print("No message entered. Sending \"Hello, World\"")
+            ciphertext = "Hello, World"
         l = []
         l.append("Sending data: ")
         l.append("(ciphertext " + ciphertext + ") ")
@@ -51,19 +69,19 @@ class Application(tk.Tk):
         file_menu.add_command(label="Exit", command=self._quit)
         menu_bar.add_cascade(label="File", menu=file_menu)
 
-        # Tab Bar
-        tab_control = ttk.Notebook(self)
-
-        send_tab = ttk.Frame(tab_control)
-        tab_control.add(send_tab, text='Send Message')
-
-        recieve_tab = ttk.Frame(tab_control)
-        tab_control.add(recieve_tab, text='Recieve Message')
-
-        tab_control.pack(expand=1, fill="both")
+        # # Tab Bar
+        # tab_control = ttk.Notebook(self)
+        #
+        # send_tab = ttk.Frame(tab_control)
+        # tab_control.add(send_tab, text='Send Message')
+        #
+        # receive_tab = ttk.Frame(tab_control)
+        # tab_control.add(receive_tab, text='Receive Message')
+        #
+        # tab_control.pack(expand=1, fill="both")
 
         # Send Tab
-        plaintext_frame = ttk.Frame(send_tab)
+        plaintext_frame = ttk.Frame(self)
         plaintext_box_label = ttk.Label(plaintext_frame, text="Plaintext: ")
         plaintext_box_label.grid(column=1, row=1)
 
@@ -73,7 +91,7 @@ class Application(tk.Tk):
         plaintext_box.grid(column=1, row=2)
         plaintext_frame.grid(column=1, row=1)
 
-        ip_frame = ttk.Frame(send_tab)
+        ip_frame = ttk.Frame(self)
         ip_box_label = ttk.Label(ip_frame, text="Destination IP: ")
         ip_box_label.grid(column=1, row=1)
 
@@ -83,28 +101,31 @@ class Application(tk.Tk):
         ip_box.grid(column=1, row=2)
         ip_frame.grid(column=1, row=2)
 
-        send_button = ttk.Button(send_tab, text="Send", command=self.send)
+        send_button = ttk.Button(self, text="Send", command=self.send)
         send_button.grid(column=1, row=3)
 
-        info_box = ttk.Frame(send_tab, borderwidth=1)
+        info_box = ttk.Frame(self, borderwidth=1)
         self.info_text = tk.Text(info_box, bg="grey")
+
         self.info_text.insert(
-            END, "Welcome to cryptpgraphy with cellular automata!\n")
+             END, "Welcome to cryptpgraphy with cellular automata!\n")
         self.info_text.config(state=DISABLED)
         self.info_text.grid(column=1, row=1)
 
-        info_box.grid(column=2, row=1, rowspan=3)
+        info_box.grid(column=2, row=1, rowspan=5)
+
+        s = ttk.Separator(self,orient=tk.HORIZONTAL).grid(column=1, row=4, sticky="ew")
 
         # Recieve tab
-        recieve_button = ttk.Button(
-            recieve_tab, text="Recieve", command=self.recieve)
-        recieve_button.grid(column=1, row=1, rowspan=2)
+        receive_button = ttk.Button(
+            self, text="Receive", command=self.receive)
+        receive_button.grid(column=1, row=5)
 
     def _quit(self):
         """Exit script and close window."""
         self.quit()
         self.destroy()
-        self.server_thread.stop()
+        # self.server_thread.stop()
         sys.exit(0)
 
     def add_info(self, info):
@@ -115,7 +136,20 @@ class Application(tk.Tk):
         self.info_text.config(state=NORMAL)
         info = "> " + str(info) + "\n"
         self.info_text.insert(END, info)
+        self.info_text.see(END)
         self.info_text.config(state=DISABLED)
+
+    def read_std_out(self):
+        sys.stdout.flush()
+        # self.buf.close()
+        with open('buf', 'r') as buf:
+            read = buf.read()
+            if read:
+                self.add_info(read)
+        with open('buf', 'w'): pass
+
+        sys.stdout = open("buf", 'a')
+        self.after(1500,self.read_std_out)
 
 
 if __name__ == '__main__':
