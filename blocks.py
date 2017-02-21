@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""For testing block elementing of data."""
+"""Prints largest rule 30 cellular automata terminal will fit."""
 
 import os
 import rules
@@ -55,5 +55,6 @@ terminal_rows, terminal_columns = os.popen('stty size', 'r').read().split()
 
 
 RULES = rules.RuleList(30).rules
-print_automata(deque(list('11010011100010100101101')), RULES, (int(terminal_rows) - 16)
-               * 4, (int(terminal_columns) - 16) * 4)
+seed = deque(list('1'))
+print_automata(seed, RULES, (int(terminal_rows) - 2)
+               * 2, (int(terminal_columns) - len(seed)) * 2)
