@@ -7,6 +7,7 @@ import socket
 import threading
 import time
 
+from CellAuto_Cryptography import Automaton
 
 class clientThread(threading.Thread):
 
@@ -40,14 +41,6 @@ class clientThread(threading.Thread):
             # Send data
             print('sending "%s"' % message)
             self.sock.sendall(message)
-            # Look for the response
-            # amount_received = 0
-            # amount_expected = len(message)
-            #
-            # while amount_received < amount_expected:
-            #     data = self.sock.recv(16)
-            #     amount_received += len(data)
-            #     print('received "%s"' % data)
 
         finally:
             print('closing socket')
@@ -56,8 +49,9 @@ class clientThread(threading.Thread):
 
 class serverThread(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, key):
         threading.Thread.__init__(self)
+        self.key = key
 
     def run(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -80,12 +74,11 @@ class serverThread(threading.Thread):
                 if data != b'':
                     data_list.append(data)
                     print('received "%s"' % data)
-                # if data:
-                #     print('sending data back to the client')
-                #     connection.sendall(data)
-                # else:
-                #     print('no more data from' + str(client_address))
-                #     break
+                if data:
+                    pass
+                else:
+                     print('no more data from' + str(client_address))
+                     break
 
         finally:
             # Clean up the connection
@@ -93,14 +86,5 @@ class serverThread(threading.Thread):
             received = (b''.join(data_list)).decode('utf-8')
             print("Received: ", end='')
             print(received)
-            return received
-
-
-# if __name__ == "__main__":
-#     server_thread = serverThread()
-#     server_thread.start()
-#     time.sleep(1)
-#
-#     ip = input("Server ip: ")
-#     client_thread = clientThread(ip, b"the medium")
-#     client_thread.start()
+            automaton = Automaton(seed=[int(k) for k in self.key])
+            print("Message: " + automaton.getPlainText(received))
