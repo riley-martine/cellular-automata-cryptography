@@ -8,6 +8,6 @@ The exchange currently goes like this:
 3. That's it. The seed is the key.
 
 ##Current Features
-1. Print random pretty automata (print_triangles.py)
-2. Print larger automata (blocktest.py)
-3. Unfinished connection work (s_c_gui.py)
+1. Print random pretty automata (print\_triangles.py)
+2. Print larger automata (blocks.py)
+3. Unfinished connection work (s\_c\_gui.py)
