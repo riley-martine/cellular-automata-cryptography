@@ -12,14 +12,14 @@ for rule in (30, 90, 106, 110, 6, 25, 38, 57, 62, 39, 22, 150, 45, 73, 225, 60, 
     for start in range(5):
         first_row = [str(random.randint(0,1)) for k in range(500)]
         rows = get_rows(first_row, rule_dict, 1000)
-        with open("rows."+str(rule)+'.'+str(start), 'w') as row_file:
+        with open(str(rule)+'.'+str(start)+'.rows', 'w') as row_file:
             for row in rows:
                 row_file.write(row)
                 row_file.write("\n")
 
         first_row2 = first_row[:250] + list(str((int(first_row[250]) + 1) % 2)) + first_row[251:]
         rows2 = get_rows(first_row2, rule_dict, 1000)
-        with open("rows2."+str(rule)+'.'+str(start), 'w') as row2_file:
+        with open(str(rule)+'.'+str(start)+'.rows2', 'w') as row2_file:
             for row in rows2:
                 row2_file.write(row + '\n')
 
@@ -35,7 +35,7 @@ for rule in (30, 90, 106, 110, 6, 25, 38, 57, 62, 39, 22, 150, 45, 73, 225, 60, 
 
 
 
-        with open("errors"+str(rule)+'.'+str(start), 'w') as error_file:
+        with open(str(rule)+'.'+str(start)+'.errors', 'w') as error_file:
             for error in errors:
                 error_file.write(error + '\n')
                 
