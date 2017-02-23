@@ -4,18 +4,11 @@ import random
 
 random.seed()
 
-
 class Automaton():
 
-    def __init__(self, seed=None):
-        if seed == None:
-            self.sequence = []
-            for i in range(8):
-                self.sequence.append(random.randint(0, 1))
-            self.seed = tuple(self.sequence)
-        else:
-            self.seed = seed
-            self.sequence = list(seed)
+    def __init__(self, key):
+            self.key = key
+            self.sequence = list(key)
 
     def update(self):
         last = tuple(self.sequence)
@@ -60,4 +53,4 @@ class Automaton():
         return plainText
 
     def reset(self):
-        self.sequence = [k for k in self.seed]
+        self.sequence = [k for k in self.key]

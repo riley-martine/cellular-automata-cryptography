@@ -9,7 +9,7 @@ from functions import get_rows
 
 def blockify(rows):
     """Takes a list of strings of 1s and 0s and returns blocked version."""
-
+    rows = deque(rows)
     # Pad to height/len divisible by 4
     columns_to_pad = len(rows[0]) % 4
     rows_to_pad = len(rows) % 4
@@ -54,7 +54,7 @@ terminal_rows, terminal_columns = os.popen('stty size', 'r').read().split()
 # print(terminal_rows)
 
 
-RULES = rules.RuleList(30).rules
+RULES = rules.RuleList(90).rules
 seed = deque(list('1'))
 print_automata(seed, RULES, (int(terminal_rows) - 2)
                * 2, (int(terminal_columns) - len(seed)) * 2)

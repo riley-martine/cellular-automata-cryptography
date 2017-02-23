@@ -26,12 +26,13 @@ def get_rows(first_row, rule_dict, number_of_rows):
         row = get_next_row(row, rule_dict)
         rows.append(row)
 
-    max_length = len(rows[-1])
     for index, row in enumerate(rows):
         rows[index] = ''.join(str(item) for item in row)
 
-    rows = ['{row:0^{max_length}}'.format(
-        row=row, max_length=max_length) for row in rows]
+    # Pad with zeros. Disabled to save disk space.
+    # max_length = len(rows[-1])
+    # rows = ['{row:0^{max_length}}'.format(
+    #     row=row, max_length=max_length) for row in rows]
 
     return list(rows)
 
