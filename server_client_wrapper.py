@@ -8,7 +8,7 @@ from CellAuto_Cryptography import Automaton
 
 class ClientThread(threading.Thread):
     """Thread that sends message to client over sockets."""
-    def __init__(self, ip, message):
+    def __init__(self, ip: str, message: str) -> None:
         threading.Thread.__init__(self)
         self.server_ip = ip
         self.message = bytes(message, encoding='utf-8')
@@ -34,7 +34,7 @@ class ClientThread(threading.Thread):
             print(error)
             raise error
 
-    def send_data(self, message):
+    def send_data(self, message: str) -> None:
         """Send data to server."""
         try:
             # Send data
@@ -48,7 +48,7 @@ class ClientThread(threading.Thread):
 
 class ServerThread(threading.Thread):
     """Thread that listens for data being sent."""
-    def __init__(self, key):
+    def __init__(self, key: str) -> None:
         threading.Thread.__init__(self)
         self.key = key
 
