@@ -53,7 +53,7 @@ def blockify(rows):
     return blocked_rows
 
 
-def print_automata(first_row: str, rule: int) -> None:
+def print_automaton(first_row: str, rule: int) -> None:
     """Print 1D automata with first row $first_row, rule $rule.
        Dimensions are determined by the size of the terminal.
        Prints largest that will fit using unicode block characters.
@@ -72,4 +72,4 @@ def print_automata(first_row: str, rule: int) -> None:
         print(row)
 
 if __name__ == "__main__":
-    print_automata(first_row='1', rule=30)
+    print_automaton(first_row='1', rule=30)
