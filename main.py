@@ -6,7 +6,7 @@ from tkinter import ttk, DISABLED, NORMAL, END
 import sys
 import os
 
-from server_client_wrapper import ClientThread, ServerThread
+from server_client_threads import ClientThread, ServerThread
 from CellAuto_Cryptography import Automaton
 
 
