@@ -4,11 +4,12 @@ import random
 
 random.seed()
 
+
 class Automaton():
 
     def __init__(self, key):
-            self.key = key
-            self.sequence = list(key)
+        self.key = key
+        self.sequence = list(key)
 
     def update(self):
         last = tuple(self.sequence)
