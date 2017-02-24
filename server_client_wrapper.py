@@ -2,18 +2,15 @@
 """Server receives, client sends."""
 
 import socket
-#print([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0])
-
 import threading
-import time
-
 from CellAuto_Cryptography import Automaton
 
-class clientThread(threading.Thread):
 
+class ClientThread(threading.Thread):
+    """Thread that sends message to client over sockets."""
     def __init__(self, ip, message):
         threading.Thread.__init__(self)
-        self.ip = ip
+        self.server_ip = ip
         self.message = bytes(message, encoding='utf-8')
         # Create a TCP/IP socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,18 +22,20 @@ class clientThread(threading.Thread):
         self.send_data(self.message)
 
     def connect(self):
+        """Connect to server."""
         print('connecting to %s port %s' % self.server_address)
         try:
             self.sock.connect(self.server_address)
-        except ConnectionRefusedError as e:
-            print(e)
-            raise(e)
+        except ConnectionRefusedError as error:
+            print(error)
+            raise error
 
-        except OSError as e:
-            print(e)
-            raise(e)
+        except OSError as error:
+            print(error)
+            raise error
 
     def send_data(self, message):
+        """Send data to server."""
         try:
             # Send data
             print('sending "%s"' % message)
@@ -47,8 +46,8 @@ class clientThread(threading.Thread):
             self.sock.close()
 
 
-class serverThread(threading.Thread):
-
+class ServerThread(threading.Thread):
+    """Thread that listens for data being sent."""
     def __init__(self, key):
         threading.Thread.__init__(self)
         self.key = key
@@ -77,8 +76,8 @@ class serverThread(threading.Thread):
                 if data:
                     pass
                 else:
-                     print('no more data from' + str(client_address))
-                     break
+                    print('no more data from' + str(client_address))
+                    break
 
         finally:
             # Clean up the connection
@@ -86,5 +85,5 @@ class serverThread(threading.Thread):
             received = (b''.join(data_list)).decode('utf-8')
             print("Received: ", end='')
             print(b''.join(data_list))
-            automaton = Automaton(seed=[int(k) for k in self.key])
+            automaton = Automaton(key=[int(k) for k in self.key])
             print("Message: " + automaton.getPlainText(received))
