@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
-# coding=utf-8
+"""GUI for cellular automata cryptographic messaging."""
 
 import tkinter as tk
-from tkinter import ttk, Menu, Label, DISABLED, NORMAL, END
+from tkinter import ttk, DISABLED, NORMAL, END
 import sys
 import os
 
-from server_client_wrapper import clientThread, serverThread
-import functions
-import rules
+from server_client_wrapper import ClientThread, ServerThread
 from CellAuto_Cryptography import Automaton
 
 
-class Application(tk.Tk):
-
+class CryptoGUI(tk.Tk):
+    """GUI for sending and recieving messages securely via CAs."""
     def __init__(self):
         tk.Tk.__init__(self)
         self.title("Send Secret Messages")
         self.info = tk.StringVar()
-        self.createWidgets()
+        self.create_widgets()
         self.protocol("WM_DELETE_WINDOW", self._quit)
 
         # If .buf exists, clear it.
@@ -32,43 +30,32 @@ class Application(tk.Tk):
         # Check and refresh buf -- see function for details
         self.read_std_out()
 
-
     def receive(self):
         """Prepare for reception of data."""
-        self.server_thread = serverThread(self.receive_key.get())
-        self.server_thread.start()
+        server_thread = ServerThread(self.receive_key.get())
+        server_thread.start()
 
-    def send(self):
+    def send_data(self):
         """Send ciphered(plaintext, key) to ip."""
-        automaton = Automaton(seed=[int(k) for k in self.send_key.get()])
-        seed = automaton.seed
-        ip = self.ip.get()
+        key = [int(k) for k in self.send_key.get()]
+        automaton = Automaton(key=key)
+        destination_ip = self.destination_ip.get()
         plaintext = self.plaintext.get()
         try:
             ciphertext = automaton.getCipherText(plaintext)
-        except IndexError as e:
+        except IndexError as _:
             print("No message entered. Sending \"Hello, World\"")
             ciphertext = automaton.getCipherText("Hello, World")
-        l = []
-        l.append("Sending data: ")
-        l.append("(ciphertext " + ciphertext + ") ")
-        # l.append("(seed " + str(seed) + ") ")
-        l.append("(destination_ip " + ip + ")")
-        self.add_info(''.join(l))
 
-        client_thread = clientThread(ip, ciphertext)
+        info = ("Sending data: " + "(ciphertext " +
+                ciphertext + ") " + "(destination_ip " + destination_ip + ")")
+        self.add_info(info)
+
+        client_thread = ClientThread(destination_ip, ciphertext)
         client_thread.start()
 
-    def createWidgets(self):
+    def create_widgets(self):
         """Make window, with all parts."""
-        # Menu Bar
-        menu_bar = Menu(self)
-        self.config(menu=menu_bar)
-
-        file_menu = Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Exit", command=self._quit)
-        menu_bar.add_cascade(label="File", menu=file_menu)
-
 
         plaintext_frame = ttk.Frame(self)
         plaintext_box_label = ttk.Label(plaintext_frame, text="Plaintext: ")
@@ -86,7 +73,7 @@ class Application(tk.Tk):
 
         self.send_key = tk.StringVar()
         send_key_box = ttk.Entry(send_key_frame, width=20,
-                           textvariable=self.send_key)
+                                 textvariable=self.send_key)
         send_key_box.grid(column=1, row=2)
         send_key_frame.grid(column=1, row=2)
 
@@ -94,26 +81,27 @@ class Application(tk.Tk):
         ip_box_label = ttk.Label(ip_frame, text="Destination IP: ")
         ip_box_label.grid(column=1, row=1)
 
-        self.ip = tk.StringVar()
+        self.destination_ip = tk.StringVar()
         ip_box = ttk.Entry(ip_frame, width=20,
-                           textvariable=self.ip)
+                           textvariable=self.destination_ip)
         ip_box.grid(column=1, row=2)
         ip_frame.grid(column=1, row=3)
 
-        send_button = ttk.Button(self, text="Send", command=self.send)
+        send_button = ttk.Button(self, text="Send", command=self.send_data)
         send_button.grid(column=1, row=4)
 
         info_box = ttk.Frame(self, borderwidth=1)
         self.info_text = tk.Text(info_box, bg="grey")
 
         self.info_text.insert(
-             END, "Welcome to cryptpgraphy with cellular automata!\n")
+            END, "Welcome to cryptpgraphy with cellular automata!\n")
         self.info_text.config(state=DISABLED)
         self.info_text.grid(column=1, row=1)
 
         info_box.grid(column=2, row=1, rowspan=7)
 
-        s = ttk.Separator(self,orient=tk.HORIZONTAL).grid(column=1, row=5, sticky="ew")
+        ttk.Separator(self, orient=tk.HORIZONTAL).grid(
+            column=1, row=5, sticky="ew")
 
         receive_key_frame = ttk.Frame(self)
         receive_key_label = ttk.Label(receive_key_frame, text="Key: ")
@@ -121,7 +109,7 @@ class Application(tk.Tk):
 
         self.receive_key = tk.StringVar()
         receive_key_box = ttk.Entry(receive_key_frame, width=20,
-                           textvariable=self.receive_key)
+                                    textvariable=self.receive_key)
         receive_key_box.grid(column=1, row=2)
         receive_key_frame.grid(column=1, row=6)
 
@@ -151,17 +139,18 @@ class Application(tk.Tk):
     def read_std_out(self):
         """Put stdout messages into the info_box. Called once, auto-refreshes"""
 
-        sys.stdout.flush() # Force write
+        sys.stdout.flush()  # Force write
         with open('.buf', 'r') as buf:
             read = buf.read()
-            if read: # Do not write if empty
+            if read:  # Do not write if empty
                 self.add_info(read)
-        with open('.buf', 'w'): pass # Clear file
+        with open('.buf', 'w'):
+            pass  # Clear file
 
         sys.stdout = open(".buf", 'a')
-        self.after(1000,self.read_std_out) # Call this again soon
+        self.after(1000, self.read_std_out)  # Call this again soon
 
 
 if __name__ == '__main__':
-    app = Application()
-    app.mainloop()
+    CRYPTO_GUI = CryptoGUI()
+    CRYPTO_GUI.mainloop()
