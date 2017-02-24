@@ -1,4 +1,7 @@
 # cellular-automata-cryptography
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6ac9d62513a040dea8cf29489322b394)](https://www.codacy.com/app/rmartine/cellular-automata-cryptography?utm_source=github.com&utm_medium=referral&utm_content=mbmartine/cellular-automata-cryptography&utm_campaign=badger)
+
 block cipher with class 4 cellular automata
 
 The exchange currently goes like this:
